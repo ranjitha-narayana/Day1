@@ -1,0 +1,108 @@
+import java.sql.*;
+import java.util.Scanner;
+ class Studentdemo {
+     Connection con = null;
+     Statement stm;
+     String addr = "jdbc:mysql://localhost:3306/jdbc";
+     String username = "root";
+     String password = "root";
+     Scanner sc = new Scanner(System.in);
+
+     public void option() {
+         while(true){
+         System.out.println("1:insert,2:remove,3:Display,4:exit");
+         System.out.println("enter the option");
+         int option = sc.nextInt();
+         switch (option) {
+             case 1:
+                 insertStudent();
+                 break;
+             case 2:
+                 removeStudent();
+                 break;
+             case 3:
+                 displayStudents();
+                 break;
+             case 4:
+                 System.exit(0);
+             default:
+                 System.out.println("enter option correctly");
+         }
+
+     }
+
+ }
+
+     public void insertStudent() {
+         try {
+             Class.forName("com.mysql.cj.jdbc.Driver");
+             con = DriverManager.getConnection(addr, username, password);
+             System.out.println("Connection Established Successfully");
+             stm = con.createStatement();
+             PreparedStatement pstm = con.prepareStatement("INSERT INTO STUDENT1 VALUES(?,?,?,?,?)");
+             System.out.println("enter name"); pstm.setString(1, sc.next());             //take buffer reader or Scanner class
+            System.out.println("enter age"); pstm.setInt(2, sc.nextInt());      //System.in
+            System.out.println("enter branch"); pstm.setString(3, sc.next());
+            System.out.println("enter usn");pstm.setInt(4, sc.nextInt());
+            System.out.println("enter place"); pstm.setString(5, sc.next());
+             int i = pstm.executeUpdate();
+             System.out.println(i + " rows affected");
+         } catch (ClassNotFoundException e) {
+             System.out.println(e);
+             System.out.println("failed..");
+         } catch (SQLException e) {
+             System.out.println(e);
+         }
+     }
+
+
+
+         public void removeStudent () {
+             try {
+                 Class.forName("com.mysql.cj.jdbc.Driver");
+                 con = DriverManager.getConnection(addr, username, password);
+                 System.out.println("Connection Established Successfully");
+                 stm = con.createStatement();
+                 PreparedStatement pstm = con.prepareStatement("DELETE FROM STUDENT1 WHERE USN = ?");
+                System.out.println("enter the usn to remove the details");
+                pstm.setInt(1, sc.nextInt());
+                 int i = pstm.executeUpdate();
+                 System.out.println(i + " rows affected");
+             } catch (ClassNotFoundException e) {
+                 System.out.println(e);
+                 System.out.println("failed..");
+             } catch (SQLException e) {
+                 System.out.println(e);
+             }
+         }
+         public void displayStudents () {
+             try {
+                 Class.forName("com.mysql.cj.jdbc.Driver");
+                 con = DriverManager.getConnection(addr, username, password);
+                 System.out.println("Connected to DB ...");
+                 stm = con.createStatement();
+                 PreparedStatement pstm = con.prepareStatement("SELECT * FROM STUDENT1 WHERE USN = ?");
+                System.out.println("enter usn"); pstm.setInt(1, sc.nextInt());
+                 ResultSet rs = pstm.executeQuery();
+                 System.out.println("----------STUDENT DB----------");
+                 while (rs.next()) {
+                     System.out.println(rs.getString("name")+"   "+ rs.getInt("age")+"   "+ rs.getString("branch")+"    " + rs.getInt("usn")+"   " + rs.getString("place"));
+                 }
+                 System.out.println("rows affected"+rs);
+
+             } catch (ClassNotFoundException e) {
+                 System.out.println(e);
+             } catch (SQLException e) {
+                 System.out.println(e);
+             }
+
+         }
+     }
+
+     public class Student {
+         public static void main(String[] args) {
+             Studentdemo sd = new Studentdemo();
+             sd.option();
+         }
+     }
+
