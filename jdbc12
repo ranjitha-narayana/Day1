@@ -1,0 +1,91 @@
+import java.sql.*;
+import java.util.Scanner;
+
+class CartDemo {
+    Connection con = null;
+    Statement stm;
+    String addr = "jdbc:mysql://localhost:3306/eweb";
+    String username = "root";
+    String password = "root";
+    Scanner sc = new Scanner(System.in);
+
+    public void Option() {
+        while (true) {
+            System.out.println("1:addBookToCart,2:removeBookFromCart,3:DisplayBookFromCart,4:CheckUserInList,5:exit");
+            System.out.println("enter the option");
+            int option = sc.nextInt();
+            switch (option) {
+                case 1:
+                    addBookToCart();
+                    break;
+
+                default:
+                    System.out.println("enter option correctly");
+            }
+
+        }
+
+    }
+
+
+    public void addBookToCart() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            con = DriverManager.getConnection(addr, username, password);
+            System.out.println("Connected to DB ...");
+            stm = con.createStatement();
+            PreparedStatement pstm = con.prepareStatement("SELECT * FROM user WHERE userid = ?");
+            System.out.println("enter userid to know the details");
+            pstm.setInt(1, sc.nextInt());
+            ResultSet rs = pstm.executeQuery();
+            System.out.println("---------- DB----------");
+            while (rs.next()) {
+
+                System.out.println("userid is present");
+
+                PreparedStatement pstm2 = con.prepareStatement("SELECT bookname FROM cart WHERE bookname = ?");
+                System.out.println("enter the bookname to know the details");
+                pstm2.setString(1, sc.next());
+                ResultSet rs1 = pstm2.executeQuery();
+                while (rs1.next()) {
+                    System.out.println("bookname is present");
+                    PreparedStatement pstm3 = con.prepareStatement("update cart set number_of_copies=number_of_copies+1 where bookname=?");
+                    System.out.println("enter bookname");
+                    pstm3.setString(1, sc.next());
+                    pstm3.executeUpdate();
+                }
+            
+            System.out.println("bookname is not present add");
+            PreparedStatement pstm1 = con.prepareStatement("insert into cart values(?,?,?)");
+            System.out.println("enter bookname");
+            pstm1.setString(1, sc.next());             //take buffer reader or Scanner class
+            System.out.println("enter userid");
+            pstm1.setInt(2, sc.nextInt());      //System.in
+            System.out.println("enter number_of_copies");
+            pstm1.setInt(3, sc.nextInt());
+
+            int i = pstm1.executeUpdate();
+            System.out.println(i + " rows affected");
+        }
+            System.out.println("userid not found ");
+
+
+        }catch (ClassNotFoundException e) {
+            System.out.println(e);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+
+    }
+}
+public class Cart{
+    public static void main(String[] args){
+        CartDemo cd=new CartDemo();
+        cd.Option();
+    }
+}
+
+
+
+
