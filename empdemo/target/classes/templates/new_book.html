@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>BOOK STORE</h1>
+    <hr>
+    <h2>Save Book</h2>
+    <form action="#" th:action="@{/saveBook}" th:object="${book}" method="POST">
+        <input type="text" th:field="*{authorname}" placeholder="Enter Author Name" class="form-control mb-4 col-4">
+        <input type="text" th:field="*{bookName}" placeholder="Enter Book Name" class="form-control mb-4 col-4">
+        <input type="number" th:field="*{numofcopies}" placeholder="Enter numofcopies" class="form-control mb-4 col-4">
+        <input type="number" th:field="*{price}" placeholder="Enter price" class="form-control mb-4 col-4">
+        <button type="submit" class="btn btn-info col-2">Save Book</button>
+    </form>
+</div>
+
+</body>
+</html>
